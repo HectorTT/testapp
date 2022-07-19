@@ -1,79 +1,80 @@
 const db = require("../models");
 const config = require("../config/auth.config");
+const handleResponse = require('../helpers/handleResponse');
 const User = db.user;
 const Role = db.role;
 const Op = db.Sequelize.Op;
-var jwt = require("jsonwebtoken");
-var bcrypt = require("bcryptjs");
-exports.signup = (req, res) => {
-  // Save User to Database
-  User.create({
-    username: req.body.username,
-    email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8)
-  })
-    .then(user => {
+let jwt = require("jsonwebtoken");
+let bcrypt = require("bcryptjs");
+const authService = require("../services/auth.service");
+class AuthController {
+  
+  async signup (req, res) {
+    // Save User to Database
+    try {
+      const payload ={
+        username: req.body.username,
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password, 8)
+      }
+      const roles = req.body.roles;
+      const response = await authService.svcsignup(payload,roles);
+      const result = {
+        message: "OK",
+        description: "Usuario registrado",
+        user: payload.username,
+        roles: roles,
+        response: response,
+      }
+      return handleResponse.success(result, res);
+      /* const user = await  User.create({
+        
+      });
       if (req.body.roles) {
-        Role.findAll({
+        const roles = await Role.findAll({
           where: {
             name: {
               [Op.or]: req.body.roles
             }
           }
-        }).then(roles => {
-          user.setRoles(roles).then(() => {
-            res.send({ message: "User was registered successfully!" });
-          });
         });
+          const response = await user.setRoles(roles);
+          const result = {
+          message: "OK",
+          description: "Usuario registrado",
+          user: user,
+          roles: roles,
+          response: response,
+        }
+        return handleResponse.success(result, res);
       } else {
         // user role = 1
-        user.setRoles([1]).then(() => {
-          res.send({ message: "User was registered successfully!" });
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({ message: err.message });
-    });
-};
-exports.signin = (req, res) => {
-  User.findOne({
-    where: {
-        email: req.body.username
-    }
-  })
-    .then(user => {
-      if (!user) {
-        return res.status(404).send({ message: "User Not found." });
-      }
-      var passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password
-      );
-      if (!passwordIsValid) {
-        return res.status(401).send({
-          accessToken: null,
-          message: "Invalid Password!"
-        });
-      }
-      var token = jwt.sign({ id: user.id }, config.secret, {
-        expiresIn: 86400 // 24 hours
-      });
-      var authorities = [];
-      user.getRoles().then(roles => {
-        for (let i = 0; i < roles.length; i++) {
-          authorities.push("ROLE_" + roles[i].name.toUpperCase());
+        const response = await user.setRoles([1]);
+        const result = {
+          message: "OK",
+          description: "Usuario registrado",
+          user: user,
+          roles: 1,
+          response: response,
         }
-        res.status(200).send({
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          roles: authorities,
-          accessToken: token
-        });
-      });
-    })
-    .catch(err => {
-      res.status(500).send({ message: err.message });
-    });
-};
+        res.send({ message: result });
+      }
+      return handleResponse.success(result, res);   */
+    }catch(error) {
+      return handleResponse.error(error, res);
+    }
+  };
+
+  async signin (req, res) {
+    
+    try {
+      const payload = {username: req.body.username, password: req.body.password};
+      const response = await authService.svcsignin(payload);
+
+      return handleResponse.success(response, res);
+    }catch(error) {
+      return handleResponse.error(error, res);
+    }
+  };
+}
+module.exports = new AuthController;

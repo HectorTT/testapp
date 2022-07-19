@@ -1,36 +1,64 @@
-const Productos = require('../models/producto.dao');
-var ProductoDao = {
-    findAll: findAll,
-    create: create,
-    findById: findById,
-    deleteById: deleteById,
-    updateProducto: updateProducto
+const db = require("../models");
+const config = require("../config/auth.config");
+const Producto = db.producto;
+const Op = db.Sequelize.Op;
+
+class ProductService {
+  constructor () {} 
+    /**
+   *
+   * @param {*} payload Modelo basado en la entidad de la base de datos
+   * @returns
+   */
+
+  async createproduct (payload) {
+
+    try {
+      return await  Producto.create(
+        payload
+      );
+    }catch(error) {
+        throw error;
+    }
+  };
+  
+  async updateproduct(id, payload) {
+    try {
+      return await Producto.update(payload, {
+        where: {
+          id: id
+        }
+      });
+    }catch(error) {
+        throw error;
+    }
+  };
+  
+  async getallproduct() {
+    try {
+      return await Producto.findAll();
+    }catch(error) {
+        throw error;
+    }
+  };
+  
+  async getByIdproduct (id) {
+    // Save User to Database
+    try {
+      return await Producto.findByPk(id);
+    }catch(error) {
+        throw error;
+    }
+  };
+  
+  async deleteByIdproduct (id){
+      // Save User to Database
+      try{
+        return await Producto.destroy({ where: { id: id } });
+      }catch(error) {
+        throw error;
+      }
+  };
+      
 }
-
-
-
-function findById(id) {
-    return Productos.findByPk(id);
-}
-
-function findAll() {
-    return Productos.findAll();
-}
-
-function deleteById(id) {
-    return Productos.destroy({ where: { id: id } });
-}
-
-function create(producto) {
-    var newProducto = new Productos(producto);
-    return newProducto.save();
-}
-
-function updateProducto(producto, id) {
-    var updateProducto = {
-        title: producto.title,
-        technologies: producto.description
-    };
-    return Productos.update(updateProducto, { where: { id: id } });
-}
-module.exports = ProductoDao;
+module.exports = new ProductService();

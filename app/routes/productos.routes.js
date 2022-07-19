@@ -1,4 +1,4 @@
-const controller = require("../controllers/productos.controller");
+const controllerproducts = require("../controllers/productos.controller");
 module.exports = function(app) {
     app.use(function(req, res, next) {
         res.header(
@@ -7,10 +7,10 @@ module.exports = function(app) {
         );
         next();
       });
-        app.post("/product", controller.createp);
-        app.put("/product/:id", controller.updatep);
-        app.delete("/product/:id", controller.deleteById);
-        app.get("/product", controller.getallp);
-        app.get("/product/:id", controller.getById);
+        app.post("/product", controllerproducts.createp);
+        app.put("/product/:id", controllerproducts.updatep);
+        app.delete("/product/:id", controllerproducts.deleteById);
+        app.get("/product", controllerproducts.getallp);
+        app.get("/product/:id", controllerproducts.getById);
 
 };
