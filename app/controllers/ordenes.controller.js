@@ -12,6 +12,7 @@ const Producto = db.producto;
 const Op = db.Sequelize.Op;
 
 class OrdenesController {
+    constructor () {} 
     async createOrden (req, res) {
 
         let subtotal = 0;

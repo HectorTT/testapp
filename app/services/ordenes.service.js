@@ -8,6 +8,7 @@ const Producto = db.producto;
 const Op = db.Sequelize.Op;
 
 class OrdenesService {
+    constructor () {} 
     async svccreateOrden (iva, productos) {
         let subtotal = 0;
         let total = 0;

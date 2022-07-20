@@ -4,11 +4,11 @@ const handleResponse = require('../helpers/handleResponse');
 const User = db.user;
 const Role = db.role;
 const Op = db.Sequelize.Op;
-let jwt = require("jsonwebtoken");
-let bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const authService = require("../services/auth.service");
 class AuthController {
-  
+  constructor () {} 
   async signup (req, res) {
     // Save User to Database
     try {
@@ -77,4 +77,4 @@ class AuthController {
     }
   };
 }
-module.exports = new AuthController;
+module.exports = new AuthController();
