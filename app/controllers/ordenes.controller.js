@@ -43,7 +43,7 @@ class OrdenesController {
                 const response = await ordenservice.svccreateOrden(iva,producto);
                 const result = {
                   message: "OK",
-                  description: "Orden Creada",
+                  description: "Ejecucion correcta",
                   response: response,
                 }
                 return handleResponse.success(result, res);

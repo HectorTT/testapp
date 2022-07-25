@@ -68,7 +68,7 @@ class AuthController {
   async signin (req, res) {
     
     try {
-      const payload = {username: req.body.username, password: req.body.password};
+      const payload = {username: req.body.email, password: req.body.password};
       const response = await authService.svcsignin(payload);
 
       return handleResponse.success(response, res);

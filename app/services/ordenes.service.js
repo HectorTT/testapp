@@ -21,19 +21,25 @@ class OrdenesService {
                     }
                     }
                 });
-                product.forEach(producto => {
-                    subtotal = parseFloat(subtotal) + parseFloat(producto.precio);
-                    total = total + (parseFloat((producto.precio * 1)) * (1+(iva / 100)));
-                });
-
-                const ordenes = await Orden.create({
-                    total: total,//req.body.total,
-                    subtotal: subtotal,//req.body.subtotal,
-                    iva: iva,
-                    //insert productos de la orden
-                });
-
-                return await ordenes.setProductos(product);
+                if(product.length > 0) {
+                    product.forEach(producto => {
+                        subtotal = parseFloat(subtotal) + parseFloat(producto.precio);
+                        total = total + (parseFloat((producto.precio * 1)) * (1+(iva / 100)));
+                    });
+    
+                    const ordenes = await Orden.create({
+                        total: total,//req.body.total,
+                        subtotal: subtotal,//req.body.subtotal,
+                        iva: iva,
+                        //insert productos de la orden
+                        
+                    });
+                    console.info(product);
+                    return await ordenes.addProductos(product , { through: { cantidad: 5 } });
+                }else{
+                    return ({message: "Producto not found"});
+                }
+                
             }else{
                 res.send({ message: "No se puede crear la orden sin productos!" });
             }

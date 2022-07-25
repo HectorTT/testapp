@@ -80,11 +80,14 @@ class ProductController {
   async deleteById (req, res){
       // Save User to Database
       try{
-        const response = await productoservice.deleteByIdproduct(req.params.id); 
+        let response = await productoservice.deleteByIdproduct(req.params.id); 
+        if(response == 0){
+          response = "Product no exist";
+        }
 
         const result = {
-          message: "Elimnado",
-          description: "El producto se elimino con exito",
+          message: "Elimnando",
+          description: "OK",
           outPut: response,
         }
         return handleResponse.success(result, res);

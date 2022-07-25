@@ -1,5 +1,6 @@
 const config = require("../config/db.config.js");
 const Sequelize = require("sequelize");
+const DataTypes = require('sequelize/lib/data-types');
 const sequelize = new Sequelize(
   config.DB,
   config.USER,
@@ -36,7 +37,7 @@ db.user.belongsToMany(db.role, {
 });
 
 
-db.producto.belongsToMany(db.orden,{
+/* db.producto.belongsToMany(db.orden,{
     through: "producto_orden",
     foreignKey: "productoId",
     otherKey: "ordenId"
@@ -45,6 +46,13 @@ db.orden.belongsToMany(db.producto,{
   through: "producto_orden",
   foreignKey: "ordenId",
   otherKey: "productoId"
-});
+}); */
+
+const Porductos_Orden = sequelize.define('producto_orden',{
+  cantidad: DataTypes.INTEGER
+},{timestamps: true});
+db.producto.belongsToMany(db.orden,{ through: Porductos_Orden});
+db.orden.belongsToMany(db.producto,{through: Porductos_Orden});
+
 db.ROLES = ["user", "admin", "moderator"];
 module.exports = db;
